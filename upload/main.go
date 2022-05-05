@@ -26,9 +26,7 @@ type AvatarEquipment struct {
 	IsBase        int8
 }
 
-//const url = "http://api-test.secondlive.world/admin/api/v1/avatar/equipment/add"
-
-const url = "https://api.secondlive.world/admin/api/v1/avatar/equipment/add"
+//const url = "http://*/avatar/equipment/add"
 
 func main() {
 	err, list := LoadSheetFile("./source/ABPublish", "./source/avatar2.xlsx", "./source/Icon")

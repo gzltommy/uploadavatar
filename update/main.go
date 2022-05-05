@@ -18,9 +18,7 @@ type UpdateAvatarEquipment struct {
 	CoverFilePath string
 }
 
-const url = "http://api-test.secondlive.world/admin/api/v1/avatar/equipment/update"
-
-//const url = "https://api.secondlive.world/admin/api/v1/avatar/equipment/update"
+//const url = "https://*/avatar/equipment/update"
 
 func main() {
 	base := "./source/ABPublish"

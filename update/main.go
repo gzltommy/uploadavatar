@@ -11,34 +11,55 @@ import (
 )
 
 type UpdateAvatarEquipment struct {
-	ID            int64
-	WebFilePath   string
-	WinFilePath   string
-	MacFilePath   string
-	CoverFilePath string
+	ID          int64
+	WebFilePath string
+	WinFilePath string
+	MacFilePath string
+	//CoverFilePath string
 }
 
-const url = "http://api-test.secondlive.world/admin/api/v1/avatar/equipment/update"
+type UpdateCfgInfo struct {
+	id        int64
+	resources string
+}
 
-//const url = "https://api.secondlive.world/admin/api/v1/avatar/equipment/update"
+//const url = "https://127" // 测试服
+
+const url = "https://127" // 正式服
 
 func main() {
-	base := "./source/ABPublish"
-	list := []UpdateAvatarEquipment{
+	updateCfgList := []UpdateCfgInfo{
 		{
-			ID:            23,
-			WebFilePath:   base + "/WebGL" + "/f_upper_moren_p1_01",
-			WinFilePath:   base + "/Windows" + "/f_upper_moren_p1_01",
-			MacFilePath:   base + "/MacOS" + "/f_upper_moren_p1_01",
-			CoverFilePath: "",
+			id:        27,
+			resources: "wf_body_01",
 		},
 		{
-			ID:            24,
-			WebFilePath:   base + "/WebGL" + "/m_upper_moren_p1",
-			WinFilePath:   base + "/Windows" + "/m_upper_moren_p1",
-			MacFilePath:   base + "/MacOS" + "/m_upper_moren_p1",
-			CoverFilePath: "",
+			id:        28,
+			resources: "wm_body_01",
 		},
+		{
+			id:        30,
+			resources: "wm_editor",
+		},
+		{
+			id:        48,
+			resources: "wm_lower_008_01_01",
+		},
+		{
+			id:        52,
+			resources: "wm_upper_018_01_01",
+		},
+	}
+
+	base := "./updatesource"
+	list := make([]UpdateAvatarEquipment, 0, len(updateCfgList))
+	for _, v := range updateCfgList {
+		list = append(list, UpdateAvatarEquipment{
+			ID:          v.id,
+			WebFilePath: base + "/WebGL/" + v.resources,
+			WinFilePath: base + "/Windows/" + v.resources,
+			MacFilePath: base + "/MacOS/" + v.resources,
+		})
 	}
 
 	for _, v := range list {
@@ -52,10 +73,6 @@ func main() {
 		}
 		if v.MacFilePath != "" && !fileExists(v.MacFilePath) {
 			fmt.Printf("fileExists %s \n", v.MacFilePath)
-			return
-		}
-		if v.CoverFilePath != "" && !fileExists(v.CoverFilePath) {
-			fmt.Printf("fileExists %s \n", v.CoverFilePath)
 			return
 		}
 	}
@@ -130,21 +147,21 @@ func SendPostFormFile(url string, ae *UpdateAvatarEquipment) (error, string) {
 		bodBuf.Write(fb1)
 	}
 
-	if ae.CoverFilePath != "" {
-		fileField := "cover_file"
-		bodyWriter.WriteField("cover", fileField)
-		_, err := bodyWriter.CreateFormFile(fileField, ae.CoverFilePath)
-		if err != nil {
-			fmt.Println("CreateFormFile err:", err)
-			return err, ""
-		}
-		fb2, err := ioutil.ReadFile(ae.CoverFilePath)
-		if err != nil {
-			fmt.Println("ReadFile err:", err)
-			return err, ""
-		}
-		bodBuf.Write(fb2)
-	}
+	//if ae.CoverFilePath != "" {
+	//	fileField := "cover_file"
+	//	bodyWriter.WriteField("cover", fileField)
+	//	_, err := bodyWriter.CreateFormFile(fileField, ae.CoverFilePath)
+	//	if err != nil {
+	//		fmt.Println("CreateFormFile err:", err)
+	//		return err, ""
+	//	}
+	//	fb2, err := ioutil.ReadFile(ae.CoverFilePath)
+	//	if err != nil {
+	//		fmt.Println("ReadFile err:", err)
+	//		return err, ""
+	//	}
+	//	bodBuf.Write(fb2)
+	//}
 	bodyWriter.Close() // 结束整个消息 body
 
 	//

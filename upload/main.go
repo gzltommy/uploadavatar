@@ -26,12 +26,12 @@ type AvatarEquipment struct {
 	IsBase        int8
 }
 
-//const url = "http://api-test.secondlive.world/admin/api/v1/avatar/equipment/add"
+//const url = "127d"// 测试服
 
-const url = "https://api.secondlive.world/admin/api/v1/avatar/equipment/add"
+const url = "127" // 正式服
 
 func main() {
-	err, list := LoadSheetFile("./source/ABPublish", "./source/avatar2.xlsx", "./source/Icon")
+	err, list := LoadSheetFile("./source/West", "./source/west.xlsx")
 	if err != nil {
 		panic(err)
 	}
@@ -45,6 +45,7 @@ func main() {
 
 	//上传资源
 	for i, v := range list {
+		//fmt.Printf("\n %+v -----%d------------------\n", v, i)
 		err, res := SendPostFormFile(url, v)
 		if err != nil {
 			fmt.Printf("\n%+v\n-----%d----fail------------", res, i)
@@ -169,7 +170,7 @@ var platformMap = map[string]int32{
 	"MacOS":   3,
 }
 
-func LoadSheetFile(modelBasePath, sheetFile, coverDir string, sheetOpt ...string) (error, []*AvatarEquipment) {
+func LoadSheetFile(modelBasePath, sheetFile string, sheetOpt ...string) (error, []*AvatarEquipment) {
 	f, err := excelize.OpenFile(sheetFile)
 	if err != nil {
 		fmt.Println("OpenFile error:", err)
@@ -227,14 +228,15 @@ func LoadSheetFile(modelBasePath, sheetFile, coverDir string, sheetOpt ...string
 
 			isBase := int8(1)
 			coverFilePath := ""
-			if coverFileName != "" {
-				coverFilePath = coverDir + "/" + coverFileName + ".png"
-				if !fileExists(coverFilePath) {
-					fmt.Printf("fileExists %s \n", coverFilePath)
-					return fmt.Errorf("file(%s) not exists", modelFileName), nil
-				}
-				isBase = 0
-			}
+			_ = coverFileName
+			//if coverFileName != "" {
+			//	coverFilePath = coverDir + "/" + coverFileName + ".png"
+			//	if !fileExists(coverFilePath) {
+			//		fmt.Printf("fileExists %s \n", coverFilePath)
+			//		return fmt.Errorf("file(%s) not exists", modelFileName), nil
+			//	}
+			//	isBase = 0
+			//}
 			ae := &AvatarEquipment{
 				LineN:         rn + 1,
 				CoverFilePath: coverFilePath,

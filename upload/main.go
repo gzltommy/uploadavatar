@@ -15,9 +15,11 @@ import (
 type AvatarEquipment struct {
 	LineN int
 
-	WebFilePath string
-	WinFilePath string
-	MacFilePath string
+	WebFilePath     string
+	WinFilePath     string
+	MacFilePath     string
+	IosFilePath     string
+	AndroidFilePath string
 
 	CoverFilePath string
 	PartID        int32
@@ -104,6 +106,32 @@ func SendPostFormFile(url string, ae *AvatarEquipment) (error, string) {
 			return err, ""
 		}
 		fb1, err := ioutil.ReadFile(ae.MacFilePath)
+		if err != nil {
+			fmt.Println("ReadFile err:", err)
+			return err, ""
+		}
+		bodBuf.Write(fb1)
+	}
+	{
+		_, err := bodyWriter.CreateFormFile("ios_model_file", ae.IosFilePath)
+		if err != nil {
+			fmt.Println("CreateFormFile err:", err)
+			return err, ""
+		}
+		fb1, err := ioutil.ReadFile(ae.IosFilePath)
+		if err != nil {
+			fmt.Println("ReadFile err:", err)
+			return err, ""
+		}
+		bodBuf.Write(fb1)
+	}
+	{
+		_, err := bodyWriter.CreateFormFile("ios_model_file", ae.AndroidFilePath)
+		if err != nil {
+			fmt.Println("CreateFormFile err:", err)
+			return err, ""
+		}
+		fb1, err := ioutil.ReadFile(ae.AndroidFilePath)
 		if err != nil {
 			fmt.Println("ReadFile err:", err)
 			return err, ""

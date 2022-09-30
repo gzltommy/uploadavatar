@@ -11,10 +11,12 @@ import (
 )
 
 type UpdateAvatarEquipment struct {
-	ID          int64
-	WebFilePath string
-	WinFilePath string
-	MacFilePath string
+	ID              int64
+	WebFilePath     string
+	WinFilePath     string
+	MacFilePath     string
+	IosFilePath     string
+	AndroidFilePath string
 	//CoverFilePath string
 }
 
@@ -55,10 +57,12 @@ func main() {
 	list := make([]UpdateAvatarEquipment, 0, len(updateCfgList))
 	for _, v := range updateCfgList {
 		list = append(list, UpdateAvatarEquipment{
-			ID:          v.id,
-			WebFilePath: base + "/WebGL/" + v.resources,
-			WinFilePath: base + "/Windows/" + v.resources,
-			MacFilePath: base + "/MacOS/" + v.resources,
+			ID:              v.id,
+			WebFilePath:     base + "/WebGL/" + v.resources,
+			WinFilePath:     base + "/Windows/" + v.resources,
+			MacFilePath:     base + "/MacOS/" + v.resources,
+			IosFilePath:     base + "/IOS/" + v.resources,
+			AndroidFilePath: base + "/Android/" + v.resources,
 		})
 	}
 
@@ -73,6 +77,15 @@ func main() {
 		}
 		if v.MacFilePath != "" && !fileExists(v.MacFilePath) {
 			fmt.Printf("fileExists %s \n", v.MacFilePath)
+			return
+		}
+		if v.IosFilePath != "" && !fileExists(v.IosFilePath) {
+			fmt.Printf("fileExists %s \n", v.IosFilePath)
+			return
+		}
+
+		if v.AndroidFilePath != "" && !fileExists(v.AndroidFilePath) {
+			fmt.Printf("fileExists %s \n", v.AndroidFilePath)
 			return
 		}
 	}
@@ -140,6 +153,37 @@ func SendPostFormFile(url string, ae *UpdateAvatarEquipment) (error, string) {
 			return err, ""
 		}
 		fb1, err := ioutil.ReadFile(ae.MacFilePath)
+		if err != nil {
+			fmt.Println("ReadFile err:", err)
+			return err, ""
+		}
+		bodBuf.Write(fb1)
+	}
+	if ae.IosFilePath != "" {
+		fileField := "ios_model_file"
+		bodyWriter.WriteField("ios_model", fileField)
+		_, err := bodyWriter.CreateFormFile(fileField, ae.IosFilePath)
+		if err != nil {
+			fmt.Println("CreateFormFile err:", err)
+			return err, ""
+		}
+		fb1, err := ioutil.ReadFile(ae.IosFilePath)
+		if err != nil {
+			fmt.Println("ReadFile err:", err)
+			return err, ""
+		}
+		bodBuf.Write(fb1)
+	}
+
+	if ae.AndroidFilePath != "" {
+		fileField := "android_model_file"
+		bodyWriter.WriteField("android_model", fileField)
+		_, err := bodyWriter.CreateFormFile(fileField, ae.AndroidFilePath)
+		if err != nil {
+			fmt.Println("CreateFormFile err:", err)
+			return err, ""
+		}
+		fb1, err := ioutil.ReadFile(ae.AndroidFilePath)
 		if err != nil {
 			fmt.Println("ReadFile err:", err)
 			return err, ""
